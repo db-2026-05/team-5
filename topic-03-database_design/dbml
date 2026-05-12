@@ -36,3 +36,140 @@
 
 
 // Вставте ваш DBML-код нижче 👇
+
+Table members {
+  member_id integer [primary key, increment]
+  first_name varchar(50)
+  last_name varchar(50)
+  email varchar(100) [unique]
+  phone varchar(20)
+  date_of_birth date
+  created_at timestamp
+}
+
+Table membership_plans {
+  plan_id integer [primary key, increment]
+  plan_type varchar(20) [unique]
+  price decimal
+  duration_months integer
+  description text
+}
+
+Table member_subscriptions {
+  subscription_id integer [primary key, increment]
+  member_id integer
+  plan_id integer
+  start_date date
+  end_date date
+  status varchar(20)
+}
+
+Ref: member_subscriptions.member_id > members.member_id
+Ref: member_subscriptions.plan_id > membership_plans.plan_id
+
+Table fitness_goals {
+  goal_id integer [primary key, increment]
+  member_id integer
+  goal_description varchar(255)
+  goal_type varchar(30)
+  target_unit varchar(20)
+  target_value decimal
+  target_date date
+  achievement_date date
+  status varchar(20)
+}
+
+Ref: fitness_goals.member_id > members.member_id
+
+Table progress_records {
+  record_id integer [primary key, increment]
+  member_id integer
+  record_date date
+  weight decimal
+  body_fat decimal
+  muscle_mass decimal
+  notes text
+}
+
+Ref: progress_records.member_id > members.member_id
+
+Table trainers {
+  trainer_id integer [primary key, increment]
+  first_name varchar(50)
+  last_name varchar(50)
+  email varchar(100) [unique]
+  phone varchar(20) [unique]
+  trainer_level varchar(30)
+  hire_date date
+  trainer_availability varchar(50)
+}
+
+Table specializations {
+  specialization_id integer [primary key, increment]
+  specialization_name varchar(50) [unique]
+  description text
+}
+
+Table trainer_specializations {
+  trainer_id integer [primary key]
+  specialization_id integer [primary key]
+}
+
+Ref: trainer_specializations.trainer_id > trainers.trainer_id
+Ref: trainer_specializations.specialization_id > specializations.specialization_id
+
+Table classes {
+  class_id integer [primary key, increment]
+  class_name varchar(50)
+  trainer_id integer
+  class_date date
+  start_time time
+  end_time time
+  capacity integer
+  room varchar(30)
+  description text
+}
+
+Ref: classes.trainer_id > trainers.trainer_id
+
+Table attendance {
+  attendance_id integer [primary key, increment]
+  member_id integer
+  class_id integer
+  attendance_date date
+  status varchar(20)
+}
+
+Ref: attendance.member_id > members.member_id
+Ref: attendance.class_id > classes.class_id
+
+Table personal_training {
+  session_id integer [primary key, increment]
+  member_id integer
+  trainer_id integer
+  session_date date
+  start_time time
+  end_time time
+  price decimal
+  status varchar(30)
+  notes text
+}
+
+Ref: personal_training.member_id > members.member_id
+Ref: personal_training.trainer_id > trainers.trainer_id
+
+Table equipment {
+  equipment_id integer [primary key, increment]
+  equipment_name varchar(50)
+  category varchar(30)
+  status varchar(20)
+  last_maintenance_date date
+}
+
+Table equipment_class {
+  class_id integer [primary key]
+  equipment_id integer [primary key]
+}
+
+Ref: equipment_class.class_id > classes.class_id
+Ref: equipment_class.equipment_id > equipment.equipment_id
