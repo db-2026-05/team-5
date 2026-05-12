@@ -9,7 +9,7 @@
 //
 //  2. Додайте зображення вашої фінальної ER-діаграми (можна вставити як посилання на зображення в інтернеті та обов'язково закомітити файл з діаграмою в репозиторій).
 //
-//  2. Кожен учасник команди підписує таблиці, які він створював:
+//  3. Кожен учасник команди підписує таблиці, які він створював:
 //
 //     [Ім'я] — назви таблиць через кому
 //     [Ім'я] — назви таблиць через кому
@@ -71,12 +71,14 @@ Table fitness_goals {
   goal_id integer [primary key, increment]
   member_id integer
   goal_description varchar(255)
-  goal_type varchar(30)
-  target_unit varchar(20)
+  goal_type varchar(30) [note: 'Категорія цілі: weight_loss, strength, endurance, etc.']
+  target_unit varchar(20) [note: 'Одиниця виміру: kg, percent, reps, minutes, km']
   target_value decimal
   target_date date
   achievement_date date
-  status varchar(20)
+  status varchar(20) [note: 'active, achieved, abandoned']
+ 
+  Note: 'target_unit та status будуть обмежені через CHECK constraints у DDL'
 }
 
 Ref: fitness_goals.member_id > members.member_id
@@ -113,6 +115,8 @@ Table specializations {
 Table trainer_specializations {
   trainer_id integer [primary key]
   specialization_id integer [primary key]
+ 
+  Note: 'Composite PK: (trainer_id, specialization_id)'
 }
 
 Ref: trainer_specializations.trainer_id > trainers.trainer_id
@@ -169,6 +173,8 @@ Table equipment {
 Table equipment_class {
   class_id integer [primary key]
   equipment_id integer [primary key]
+ 
+  Note: 'Composite PK: (class_id, equipment_id)'
 }
 
 Ref: equipment_class.class_id > classes.class_id
