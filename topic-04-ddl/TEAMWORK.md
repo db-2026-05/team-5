@@ -8,6 +8,7 @@
 
 ## Таблиця внесків
 | Учасник | Роль у команді | Що зроблено | Артефакти / файли |
+| - | - | - | - |
 | Валерія | Financial module (Members & Subscriptions) | таблиці: members, membership_plans, member_subscriptions, зібрала фінальний ddl.sql, відео-презентація | ddl.sql, відео |
 | Анна | HR module (Trainers & Specializations) | таблиці: trainers, specializations, trainer_specializations, документація | ddl.sql, TEAMWORK.md |
 | Анжела | Operations module (Classes, Attendance & Equipment) | таблиці: classes, attendance, equipment, equipment_class | ddl.sql |
@@ -46,30 +47,32 @@
 2. membership_plans
 3. trainers
 4. specializations
-5. equipment
-6. member_subscriptions
-7. fitness_goals
+5. classes
+6. equipment
+7. member_subscriptions
 8. progress_records
-9. classes
+9. fitness_goals
 10. personal_training
-11. trainer_specializations
-12. equipment_class
-13. attendance
+11. attendance
+12. trainer_specializations
+13. equipment_class
 
-member_subscriptions → members, membership_plans
+Foreign key dependencies:
+
 classes → trainers
-equipment_class → classes, equipment
+member_subscriptions → members, membership_plans
 progress_records → members
-personal_training → members, trainers
-trainer_specializations → trainers, specializations
 fitness_goals → members
+personal_training → members, trainers
 attendance → members, classes
+trainer_specializations → trainers, specializations
+equipment_class → classes, equipment
 
 
 Під час створення фінального DDL-файлу для PostgreSQL ми дотримувалися правильного порядку створення таблиць. Це було важливо, тому що таблиці з foreign keys могли посилатися тільки на ті таблиці, які вже існували в базі даних.
 
-Спочатку ми створили незалежні таблиці, тобто таблиці, які не залежали від інших таблиць. До них належали members, membership_plans, trainers, specializations і equipment.
+Спочатку ми створили незалежні таблиці, тобто таблиці, які не містили foreign keys і не залежали від інших таблиць. До них належали members, membership_plans, trainers, specializations та equipment.
 
-Після цього ми створили таблиці, які мали foreign keys і посилалися на основні таблиці. Наприклад, member_subscriptions посилалася на members і membership_plans, fitness_goals та progress_records посилалися на members, classes посилалися на trainers, а personal_training посилалася на members і trainers.
+Після цього ми створили таблиці, які містили foreign keys і посилалися на основні таблиці. Наприклад, classes посилалася на trainers, member_subscriptions — на members і membership_plans, progress_records та fitness_goals — на members, а personal_training — на members і trainers. Далі була створена таблиця attendance, яка містила foreign keys на members і classes та використовувалася для зберігання інформації про відвідування занять.
 
-Останніми ми створили junction tables, або таблиці зв’язків. Вони використовувалися для реалізації many-to-many relationships між таблицями. Наприклад, trainer_specializations зв’язувала trainers і specializations, equipment_class зв’язувала classes і equipment, а attendance зв’язувала members і classes.
+Останніми ми створили junction tables, які реалізовували many-to-many relationships між таблицями. Таблиця trainer_specializations зв’язувала trainers і specializations, а equipment_class — classes та equipment.

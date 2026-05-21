@@ -124,6 +124,7 @@ CREATE TABLE classes (
 	capacity INT NOT NULL,
 	room VARCHAR(30) NOT NULL,
 	description VARCHAR(500),
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 
 	CONSTRAINT pk_classes
 	PRIMARY KEY (class_id),
@@ -256,7 +257,13 @@ CREATE TABLE fitness_goals (
         CHECK (target_unit IN ('kg', 'percent', 'reps', 'minutes', 'km')),
 
     CONSTRAINT chk_fitness_goals_target_value 
-        CHECK (target_value > 0)
+        CHECK (target_value > 0),
+		
+    CONSTRAINT chk_fitness_goals_achievement_date_consistency
+    CHECK (
+        (status = 'achieved' AND achievement_date IS NOT NULL) OR
+        (status != 'achieved' AND achievement_date IS NULL)
+    )
 );
 
 
@@ -300,7 +307,7 @@ CREATE TABLE attendance (
 	member_id BIGINT NOT NULL,
 	class_id BIGINT NOT NULL,
 	attendance_date DATE NOT NULL,
-	status VARCHAR(20) NOT NULL,
+	status VARCHAR(20) NOT NULL DEFAULT 'absent',
 
 	CONSTRAINT pk_attendance
 	PRIMARY KEY (attendance_id),
@@ -501,7 +508,8 @@ COMMENT ON COLUMN fitness_goals.status IS 'Goal lifecycle: active, achieved, or 
 
 -- personal_training comments
 COMMENT ON TABLE personal_training IS 'Individual paid training sessions between members and trainers';
-COMMENT ON COLUMN personal_training.price IS 'Snapshot price at booking time';
+COMMENT ON COLUMN personal_training.price 
+IS 'Snapshot of session price at booking time; allows audit trail if trainer rates change';
 COMMENT ON COLUMN personal_training.status IS 'planned, finished, or canceled';
 COMMENT ON COLUMN personal_training.notes IS 'Trainer notes about the session (injuries, progress, next steps)';
 
