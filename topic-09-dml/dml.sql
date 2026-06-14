@@ -35,6 +35,7 @@
 -- membership_plans
 -- Only three subscription types exist: monthly, yearly, and premium.
 
+BEGIN;
 INSERT INTO membership_plans (plan_type, price, duration_month, description)
 VALUES
     ('monthly', 9.99, 1, 'Monthly subscription plan with standard access'),
@@ -86,7 +87,7 @@ VALUES
     ('Kateryna', 'Klymenko', 'katya.klymenko@icloud.com', '+380731234321', 'middle', '2026-04-19', 'on leave'),
     ('Bohdan', 'Moroz', 'bohdan.moroz@icloud.com', '+380931112255', 'senior', '2026-04-11', 'unavailable'),
     ('Oksana', 'Kostenko', 'o.kostenko@outlook.com', '+380951234654', 'middle', '2026-05-31', 'available'),
-    ('Maksym', 'Marchenko', 'maks.march@gmail.com', '+380961112266', 'junior', DEFAULT, 'available'),
+    ('Maksym', 'Marchenko', 'maks.march@gmail.com', '+380961112266', 'junior', '2026-06-01', 'available'),
     ('Andrii', 'Danylchenko', 'andrii.danyl@gmail.com', '+380971234987', 'middle', '2026-04-30', 'unavailable'),
     ('Alina', 'Savchenko', 'alina.sav@ukr.net', '+380991112277', 'senior', '2026-05-27', 'available');
 
@@ -331,7 +332,7 @@ WHERE capacity = (
     FROM classes
 );
 
--- specializations: rename 'Yoga' to 'Hatha Yoga'.
+-- specializations: rename 'Yoga' to 'Hatha Yoga' to align with the actual class name used in the schedule. Renaming makes it consistent with 'Hatha Yoga' class.
 UPDATE specializations
 SET specialization_name = 'Hatha Yoga'
 WHERE specialization_name = 'Yoga';
@@ -423,7 +424,7 @@ WHERE specialization_id NOT IN (
     JOIN trainers t ON t.trainer_id = ts.trainer_id
     JOIN classes c ON c.trainer_id = t.trainer_id
 );
-
+COMMIT;
 
 -- WHY NO DELETE IN SOME TABLES
 
